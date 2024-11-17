@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>메인 페이지</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .main-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        .main-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .main-header h1 {
+            color: #4CAF50;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .info-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .info-button:hover {
+            background-color: #45a049;
+        }
+
+        .password-button {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .password-button:hover {
+            background-color: #1976D2;
+        }
+
+        .logout-button {
+            background-color: #ff4444;
+            color: white;
+        }
+
+        .logout-button:hover {
+            background-color: #cc0000;
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            width: 300px;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .confirm-button {
+            background-color: #ff4444;
+            color: white;
+        }
+
+        .cancel-button {
+            background-color: #666;
+            color: white;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="main-header">
+            <h1>환영합니다!</h1>
+        </div>
+        <div class="button-group">
+            <a href="/user/change-userInfo" class="menu-button info-button">회원정보 수정</a>
+            <a href="/user/change-password" class="menu-button password-button">비밀번호 변경</a>
+            <button onclick="showLogoutModal()" class="menu-button logout-button">로그아웃</button>
+            <a href="/user/delete" class="menu-button delete-button">회원 탈퇴</a>
+        </div>
+    </div>
+
+    <!-- 로그아웃 확인 모달 -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h3>로그아웃</h3>
+            <p>정말 로그아웃 하시겠습니까?</p>
+            <div class="modal-buttons">
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="modal-button confirm-button">확인</button>
+                </form>
+                <button onclick="hideLogoutModal()" class="modal-button cancel-button">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 비밀번호 변경 성공 모달 -->
+    <div id="passwordChangeModal" class="modal" th:if="${param.passwordChanged}">
+        <div class="modal-content">
+            <h3>알림</h3>
+            <p>비밀번호가 성공적으로 변경되었습니다.</p>
+            <div class="modal-buttons">
+                <button onclick="hidePasswordChangeModal()" class="modal-button confirm-button">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 회원 탈퇴 확인 모달 -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3>회원 탈퇴</h3>
+            <p>정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+            <div class="modal-buttons">
+                <form th:action="@{/user/delete}" method="post" style="display: inline;">
+                    <button type="submit" class="modal-button confirm-button">확인</button>
+                </form>
+                <button onclick="hideDeleteModal()" class="modal-button cancel-button">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function hidePasswordChangeModal() {
+            document.getElementById('passwordChangeModal').style.display = 'none';
+        }
+
+        function showDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        window.onload = function() {
+            if (new URLSearchParams(window.location.search).has('passwordChanged')) {
+                document.getElementById('passwordChangeModal').style.display = 'block';
+            }
+        }
+
+        window.onclick = function(event) {
+            var logoutModal = document.getElementById('logoutModal');
+            var passwordModal = document.getElementById('passwordChangeModal');
+            var deleteModal = document.getElementById('deleteModal');
+            if (event.target == logoutModal) {
+                hideLogoutModal();
+            }
+            if (event.target == passwordModal) {
+                hidePasswordChangeModal();
+            }
+            if (event.target == deleteModal) {
+                hideDeleteModal();
+            }
+        }
+    </script>
+</body>
+</html> 

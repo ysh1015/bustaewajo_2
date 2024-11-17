@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hk.transportProject.member.mapper.UserMapper">
+
+    <select id="findByUserId" resultType="com.hk.transportProject.member.model.User">
+        SELECT 
+            USER_NO as userNo,
+            USER_ID as userId,
+            USER_PWD as userPwd,
+            USER_EMAIL as userEmail
+        FROM USER 
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <insert id="save" parameterType="com.hk.transportProject.member.model.User">
+        INSERT INTO USER (
+            USER_NO,
+            USER_ID,
+            USER_PWD,
+            USER_EMAIL
+        ) VALUES (
+            #{userNo},
+            #{userId},
+            #{userPwd},
+            #{userEmail}
+        )
+    </insert>
+
+    <select id="findByUserIdAndEmail" resultType="User">
+        SELECT * FROM USER 
+        WHERE USER_ID = #{userId} AND USER_EMAIL = #{userEmail}
+    </select>
+
+    <update id="updatePassword">
+        UPDATE USER 
+        SET USER_PWD = #{userPwd}
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <update id="updateUserInfo">
+        UPDATE USER 
+        SET 
+            USER_EMAIL = #{userEmail}
+            <if test="userPwd != null and userPwd != ''">
+                , USER_PWD = #{userPwd}
+            </if>
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <update id="updateEmail">
+        UPDATE USER 
+        SET USER_EMAIL = #{userEmail}
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <delete id="deleteUser">
+        DELETE FROM USER WHERE USER_ID = #{userId}
+    </delete>
+
+</mapper>
+

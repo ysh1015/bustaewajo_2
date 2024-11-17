@@ -1,0 +1,40 @@
+[versions]
+agp = "8.3.0"
+junit = "4.13.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+activity = "1.8.0"
+constraintlayout = "2.1.4"
+databindingRuntime = "8.7.2"
+
+[libraries]
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+
+# 레트로핏 추가
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version = "2.9.0" }
+retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version = "2.9.0" }
+# retrofit xml
+simplexml = {group = "com.squareup.retrofit2", name = "converter-simplexml", version = "2.9.0"}
+# Tikxml
+tikxml-annotation = {group = "com.tickaroo.tikxml", name = "annotation", version = "0.8.13"}
+tikxml-core = {group = "com.tickaroo.tikxml", name = "core", version = "0.8.13"}
+tikxml-retrofit-converter = {group = "com.tickaroo.tikxml", name = "retrofit-converter", version = "0.8.13"}
+tikxml-processor = {group = "com.tickaroo.tikxml", name = "processor", version = "0.8.13"}
+
+# 네이버 지도 API
+naver-map-sdk = { group = "com.naver.maps", name = "map-sdk", version = "3.19.1" }
+# 네이버 지도 위치 기반 서비스
+naver-map-service = {group = "com.google.android.gms", name = "play-services-location", version = "21.3.0"}
+databinding-runtime = { group = "androidx.databinding", name = "databinding-runtime", version.ref = "databindingRuntime" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+
