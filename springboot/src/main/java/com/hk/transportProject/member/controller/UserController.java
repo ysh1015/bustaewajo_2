@@ -4,10 +4,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.hk.transportProject.member.service.UserService;
 import com.hk.transportProject.member.model.User;
@@ -30,12 +33,28 @@ public class UserController {
     @PostMapping("/register")
     public String register(User user, RedirectAttributes redirectAttributes) {
         try {
+            if (userService.isUserIdDuplicate(user.getUserId())) {
+                redirectAttributes.addFlashAttribute("error", "이미 사용중인 아이디입니다.");
+                redirectAttributes.addFlashAttribute("user", user);
+                return "redirect:/user/register";
+            }
+
             userService.registerUser(user);
             return "redirect:/login?register=success";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "회원가입 중 오류가 발생했습니다.");
+            redirectAttributes.addFlashAttribute("user", user);
             return "redirect:/user/register";
         }
+    }
+
+    @PostMapping("/check-userid")
+    @ResponseBody
+    public Map<String, Boolean> checkUserId(@RequestParam String userId) {
+        boolean isDuplicate = userService.isUserIdDuplicate(userId);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("duplicate", isDuplicate);
+        return response;
     }
 
     @GetMapping("/login")
@@ -58,40 +77,50 @@ public class UserController {
                            Principal principal,
                            Model model) {
         try {
-            User user = new User();
-            user.setUserId(principal.getName());
-            user.setUserEmail(userEmail);
+            User existingUser = userService.findByUserId(principal.getName());
+            if (existingUser == null) {
+                model.addAttribute("error", true);
+                model.addAttribute("message", "사용자 정보를 찾을 수 없습니다.");
+                return "user/change-userInfo";
+            }
 
             if (!userService.checkPassword(principal.getName(), currentPassword)) {
                 model.addAttribute("error", true);
                 model.addAttribute("message", "현재 비밀번호가 일치하지 않습니다.");
+                model.addAttribute("user", existingUser);
                 return "user/change-userInfo";
             }
+
+            existingUser.setUserEmail(userEmail);
 
             if (newPassword != null && !newPassword.isEmpty()) {
                 if (!newPassword.equals(confirmPassword)) {
                     model.addAttribute("error", true);
                     model.addAttribute("message", "새 비밀번호가 일치하지 않습니다.");
+                    model.addAttribute("user", existingUser);
                     return "user/change-userInfo";
                 }
-                user.setUserPwd(newPassword);
-                boolean isUpdated = userService.updateUserInfo(user, true);
+                existingUser.setUserPwd(newPassword);
+                boolean isUpdated = userService.updateUserInfo(existingUser, true);
                 if (isUpdated) {
                     model.addAttribute("message", "회원정보가 성공적으로 수정되었습니다.");
                 }
             } else {
-                boolean isUpdated = userService.updateEmail(user.getUserId(), user.getUserEmail());
+                boolean isUpdated = userService.updateEmail(existingUser.getUserId(), userEmail);
                 if (isUpdated) {
                     model.addAttribute("message", "이메일이 성공적으로 수정되었습니다.");
                 }
             }
+
+            User updatedUser = userService.findByUserId(principal.getName());
+            model.addAttribute("user", updatedUser);
         } catch (Exception e) {
             model.addAttribute("error", true);
             model.addAttribute("message", "회원정보 수정 중 오류가 발생했습니다.");
+            User currentUser = userService.findByUserId(principal.getName());
+            model.addAttribute("user", currentUser);
         }
         
-        User updatedUser = userService.findByUserId(principal.getName());
-        model.addAttribute("user", updatedUser);
         return "user/change-userInfo";
     }
 

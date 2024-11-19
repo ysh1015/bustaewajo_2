@@ -44,6 +44,11 @@ public class UserService implements UserDetailsService {
     }
 
     public void registerUser(User user) {
+        User existingUser = userMapper.findByUserId(user.getUserId());
+        if (existingUser != null) {
+            throw new IllegalStateException("이미 사용중인 아이디입니다.");
+        }
+
         String userNo = generateUserNo();
         user.setUserNo(userNo);
         user.setUserPwd(passwordEncoder.encode(user.getUserPwd()));
@@ -113,5 +118,10 @@ public class UserService implements UserDetailsService {
             return true;
         }
         return false;
+    }
+
+    public boolean isUserIdDuplicate(String userId) {
+        User user = userMapper.findByUserId(userId);
+        return user != null;
     }
 }
