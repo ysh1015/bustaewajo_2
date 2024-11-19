@@ -1,34 +1,77 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f5f5f5;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: #f5f5f5;
 }
 
-.success-message {
-    font-size: 32px;
-    color: #4CAF50;
-    text-align: center;
-    padding: 20px;
+.main-container {
     background-color: white;
+    padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
 }
 
-.logout-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #ff4444;
-    color: white;
+.main-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.main-header h1 {
+    color: #4CAF50;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.menu-button {
+    width: 100%;
+    padding: 12px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
     transition: background-color 0.3s;
+}
+
+.info-button {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.info-button:hover {
+    background-color: #45a049;
+}
+
+.password-button {
+    background-color: #2196F3;
+    color: white;
+}
+
+.password-button:hover {
+    background-color: #1976D2;
+}
+
+.logout-button {
+    background-color: #ff4444;
+    color: white;
 }
 
 .logout-button:hover {
@@ -55,18 +98,27 @@ body {
     padding: 20px;
     border-radius: 5px;
     text-align: center;
+    width: 300px;
+}
+
+.modal-content h3 {
+    margin-bottom: 15px;
+    color: #333;
 }
 
 .modal-buttons {
     margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 .modal-button {
-    padding: 8px 16px;
-    margin: 0 5px;
+    padding: 8px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 .confirm-button {
@@ -79,15 +131,11 @@ body {
     color: white;
 }
 
-.gray-button {
-    background-color: #808080;
+.delete-button {
+    background-color: #dc3545;
     color: white;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 5px;
-    display: inline-block;
 }
 
-.gray-button:hover {
-    background-color: #666666;
-} 
+.delete-button:hover {
+    background-color: #c82333;
+}

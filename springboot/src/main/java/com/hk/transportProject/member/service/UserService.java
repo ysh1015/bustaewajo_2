@@ -36,6 +36,8 @@ public class UserService implements UserDetailsService {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
+        System.out.println("로그인 성공시에 자기 아이디 찍어보기 : " + userId);
+
         return new org.springframework.security.core.userdetails.User(
             user.getUserId(),
             user.getUserPwd(),
@@ -48,6 +50,10 @@ public class UserService implements UserDetailsService {
         if (existingUser != null) {
             throw new IllegalStateException("이미 사용중인 아이디입니다.");
         }
+
+        System.out.println(user.getUserId());
+        System.out.println(user.getUserPwd());
+        System.out.println(user.getUserEmail());
 
         String userNo = generateUserNo();
         user.setUserNo(userNo);
@@ -75,6 +81,12 @@ public class UserService implements UserDetailsService {
 
     public boolean changePassword(String userId, String currentPassword, String newPassword) {
         User user = userMapper.findByUserId(userId);
+        System.out.println(user.getUserNo());
+        System.out.println(user.getUserId());
+        System.out.println(user.getUserPwd());
+        System.out.println(user.getUserEmail());
+        System.out.println(userId);
+        System.out.println(newPassword);
         if (user != null && passwordEncoder.matches(currentPassword, user.getUserPwd())) {
             user.setUserPwd(passwordEncoder.encode(newPassword));
             userMapper.updatePassword(user);
